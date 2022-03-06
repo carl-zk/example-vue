@@ -1,7 +1,6 @@
 <script>
 import { nextTick } from "vue";
 import BlogPost from "./components/BlogPost.vue";
-import myComponent from "./components/MyComponent.vue";
 import MyComponent from "./components/MyComponent.vue";
 // import { debounce } from "lodash-es";
 
@@ -114,4 +113,6 @@ export default {
   </div>
   <br />
   <MyComponent class="baz boo"></MyComponent>
+  <input v-focus />
+  <h1>{{ $translate("greetings.hello") }}</h1>
 </template>
