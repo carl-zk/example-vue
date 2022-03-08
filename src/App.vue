@@ -5,10 +5,6 @@ import SideBar from './components/SideBar.vue'
 const router = useRouter()
 const route = useRoute()
 
-function toHome() {
-  router.push("/")
-}
-
 </script>
 
 <template>
@@ -22,3 +18,13 @@ function toHome() {
     </el-col>
   </el-row>
 </template>
+
+<style>
+#app {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
+</style>

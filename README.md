@@ -13,8 +13,10 @@ Since TypeScript cannot handle type information for `.vue` imports, they are shi
 ## Start
 
 `npm install`
+
 `npm run dev`
 
 ## reference
 
 [Vue.js + TypeScript: Basic views and routing setup](https://medium.com/@albro/vue-js-typescript-basic-views-and-routing-setup-496931f753fb)
+[element plus](https://element-plus.gitee.io/zh-CN/component/button.html)

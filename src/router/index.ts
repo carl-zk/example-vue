@@ -1,13 +1,18 @@
-import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
-import AddNameVue from "../components/AddName.vue";
-import HelloWorldVue from "../components/HelloWorld.vue";
-import App from '../App.vue'
-
-import { routes } from './routes'
+import { createRouter, createWebHashHistory } from "vue-router";
+import { allRoutes } from './routes'
 
 const router = createRouter({
-  routes,
+  routes: allRoutes,
   history: createWebHashHistory("./"),
 });
+
+router.beforeEach((to, from, next) => {
+  console.log('router filter before', from.path)
+  next()
+})
+
+router.afterEach((to, from) => {
+  console.log('router filter after ', to.path)
+})
 
 export default router;
