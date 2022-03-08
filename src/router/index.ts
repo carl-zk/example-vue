@@ -1,12 +1,9 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
-import AddNameVue from "../AddName.vue";
+import AddNameVue from "../components/AddName.vue";
 import HelloWorldVue from "../components/HelloWorld.vue";
 import App from '../App.vue'
 
-const routes: RouteRecordRaw[] = [
-  { path: '/addName', component: AddNameVue },
-  { path: '/hello', component: HelloWorldVue }
-];
+import { routes } from './routes'
 
 const router = createRouter({
   routes,

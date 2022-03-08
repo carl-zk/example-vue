@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useRouter, useRoute } from 'vue-router'
+import SideBar from './components/SideBar.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -11,12 +12,13 @@ function toHome() {
 </script>
 
 <template>
-  <button @click="toHome">Home</button>
-  <p>
-    <router-link to="/hello">hello</router-link>
-    <br />
-    <router-link to="/addName">addName</router-link>
-  </p>
+  <el-row>
+    <el-col :span="4">
+      <SideBar />
+    </el-col>
 
-  <router-view></router-view>
+    <el-col :span="20">
+      <router-view></router-view>
+    </el-col>
+  </el-row>
 </template>
