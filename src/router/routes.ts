@@ -15,6 +15,12 @@ const allRoutes: RouteRecordRaw[] = [
         path: '/hello',
         name: 'example couter',
         component: () => import('../components/HelloWorld.vue')
+    },
+    {
+        path: '/board',
+        name: 'board',
+        component: () => import('../components/Board.vue')
+
     }
 ];
 
