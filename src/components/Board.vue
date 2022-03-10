@@ -65,6 +65,9 @@ function calcBoardPosition() {
 
 <style scoped>
 .board {
+  display: grid;
+  grid-template-columns: repeat(10, 10%);
+  grid-template-rows: repeat(10, 10%);
   position: absolute;
   top: 50%;
   left: 0;

@@ -21,7 +21,12 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class="rec" :style="{ left: x, right: y }"></div>
+  <div class="rec" :style="{ left: x, right: y }">
+    <p>
+      {{ x }}
+      {{ y }}
+    </p>
+  </div>
 </template>
 
 <style scoped>
