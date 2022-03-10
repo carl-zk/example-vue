@@ -15,17 +15,27 @@ const pos = computed(() => {
 
 })
 
+const boxes: Position[][] = reactive([])
+
+
 function move(e: MouseEvent) {
   x.value = e.clientX
   y.value = e.clientY
-  const box = document.getElementById('box')
-  box!.style.left = e.clientX + 'px'
-  box!.style.top = e.clientY + 'px'
+  // const box = document.getElementById('box')
+  // box!.style.left = (e.clientX - boardX.value) + "px"
+  // box!.style.top = (e.clientY - boardY.value) + "px"
 }
 
 onMounted(() => {
   window.onresize = calcBoardPosition
   calcBoardPosition()
+  for (let i = 0; i < 10; i++) {
+    boxes[i] = []
+    for (let j = 0; j < 10; j++) {
+      boxes[i].push({ x: boardX.value + i * 50, y: boardY.value + j * 50 })
+    }
+  }
+  console.log(boxes)
 })
 
 function calcBoardPosition() {
@@ -45,7 +55,11 @@ function calcBoardPosition() {
     {{ y }}
   </p>
   <div class="board" @mousemove="move">
-    <Box id="box" :x="x" :y="y" />
+    <div v-for="r in boxes">
+      <div v-for="b in r">
+        <Box :x="b.x" :y="b.y" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -58,9 +72,11 @@ function calcBoardPosition() {
   margin: auto;
 
   /* right: 50%; */
-  height: 500px;
-  width: 500px;
+  height: 520px;
+  width: 520px;
   background-color: palegoldenrod;
-  text-align: center;
+  /* text-align: center; */
+
+  border: 3px solid #73ad21;
 }
 </style>

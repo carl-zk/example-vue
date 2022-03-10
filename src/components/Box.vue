@@ -21,7 +21,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class="rec"></div>
+  <div class="rec" :style="{ left: x, right: y }"></div>
 </template>
 
 <style scoped>
@@ -29,6 +29,8 @@ const props = defineProps<{
   height: 50px;
   width: 50px;
   background-color: powderblue;
-  position: absolute;
+  position: relative;
+  margin: 0;
+  border: 1px solid #73ad21;
 }
 </style>
