@@ -32,15 +32,28 @@ onMounted(() => {
   for (let i = 0; i < 10; i++) {
     boxes[i] = []
     for (let j = 0; j < 10; j++) {
-      boxes[i].push({ x: boardX.value + i * 50, y: boardY.value + j * 50 })
+      // boxes[i].push({ x: boardX.value + i * 50, y: boardY.value + j * 50 })
+      boxes[i].push({ x: i, y: j })
     }
   }
-  console.log(boxes)
+  window.addEventListener("keyup", (e) => {
+    if ("ArrowLeft" == e.key || "ArrowUp" == e.key || "ArrowRight" == e.key || "ArrowDown" == e.key) {
+      console.log(e)
+    }
+  })
 })
 
 function calcBoardPosition() {
   boardX.value = document.querySelector('.board')!.getBoundingClientRect().left
   boardY.value = document.querySelector('.board')!.getBoundingClientRect().top
+}
+
+function press(e: KeyboardEvent) {
+  console.log(e)
+}
+
+function cli(e: MouseEvent) {
+  console.log(e)
 }
 
 </script>
@@ -57,7 +70,7 @@ function calcBoardPosition() {
   <div class="board" @mousemove="move">
     <div v-for="r in boxes">
       <div v-for="b in r">
-        <Box :x="b.x" :y="b.y" />
+        <Box :x="b.x" :y="b.y" @click="cli" />
       </div>
     </div>
   </div>
@@ -66,8 +79,8 @@ function calcBoardPosition() {
 <style scoped>
 .board {
   display: grid;
-  grid-template-columns: repeat(10, 10%);
   grid-template-rows: repeat(10, 10%);
+  grid-template-columns: repeat(10, 10%);
   position: absolute;
   top: 50%;
   left: 0;

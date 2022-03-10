@@ -18,10 +18,14 @@ const props = defineProps<{
 //   // console.log(i, j)
 // })
 
+function onKeyEvent() {
+  console.log(props.x, props.y)
+}
+
 </script>
 
 <template>
-  <div class="rec" :style="{ left: x, right: y }">
+  <div class="rec">
     <p>
       {{ x }}
       {{ y }}
