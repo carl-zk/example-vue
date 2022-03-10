@@ -1,21 +1,27 @@
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, toRefs, Ref, watch } from 'vue';
 import { Position } from '../entity/entities';
 
-const p = reactive({ x: 0, y: 0 })
+const props = defineProps<{
+  x: Ref,
+  y: Ref
+}>()
 
-const pos = computed(() => {
+const i = ref(0)
+const j = ref(0)
 
+watch(props, () => {
+  console.log(i)
+  // console.log(props.x, props.y)
+  // i.value = props.x.value
+  // j.value = props.y.value
+  // console.log(i, j)
 })
-
-function move(dx: number, dy: number) {
-
-}
 
 </script>
 
 <template>
-  <a class="rec"></a>
+  <div class="rec" :style="{ left: i, top: j }"></div>
 </template>
 
 <style scoped>
@@ -23,5 +29,6 @@ function move(dx: number, dy: number) {
   height: 50px;
   width: 50px;
   background-color: powderblue;
+  position: absolute;
 }
 </style>

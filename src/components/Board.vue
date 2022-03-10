@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { Position } from '../entity/entities';
+import Box from './Box.vue'
 
 const boardX = ref(0)
 const boardY = ref(0)
@@ -19,9 +20,8 @@ function move(e: MouseEvent) {
   y.value = e.clientY
 }
 
-
-
 onMounted(() => {
+  window.onresize = calcBoardPosition
   calcBoardPosition()
 })
 
@@ -41,14 +41,19 @@ function calcBoardPosition() {
     {{ x }}
     {{ y }}
   </p>
-  <div class="board" @mousemove="move"></div>
+  <div class="board" @mousemove="move">
+    <Box :x="x" :y="y" />
+  </div>
 </template>
 
 <style scoped>
 .board {
   position: absolute;
   top: 50%;
-  left: 40%;
+  left: 0;
+  right: 0;
+  margin: auto;
+
   /* right: 50%; */
   height: 500px;
   width: 500px;
