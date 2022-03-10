@@ -3,25 +3,25 @@ import { ref, reactive, computed, toRefs, Ref, watch } from 'vue';
 import { Position } from '../entity/entities';
 
 const props = defineProps<{
-  x: Ref,
-  y: Ref
+  x: number,
+  y: number
 }>()
 
-const i = ref(0)
-const j = ref(0)
+// const i = ref(props.x)
+// const j = ref(props.y)
 
-watch(props, () => {
-  console.log(i)
-  // console.log(props.x, props.y)
-  // i.value = props.x.value
-  // j.value = props.y.value
-  // console.log(i, j)
-})
+// watch(props, (newP) => {
+//   // console.log(newP.x, newP.y)
+//   // console.log(props.x, props.y)
+//   // i.value = props.x.value
+//   // j.value = props.y.value
+//   // console.log(i, j)
+// })
 
 </script>
 
 <template>
-  <div class="rec" :style="{ left: i, top: j }"></div>
+  <div class="rec"></div>
 </template>
 
 <style scoped>

@@ -18,6 +18,9 @@ const pos = computed(() => {
 function move(e: MouseEvent) {
   x.value = e.clientX
   y.value = e.clientY
+  const box = document.getElementById('box')
+  box!.style.left = e.clientX + 'px'
+  box!.style.top = e.clientY + 'px'
 }
 
 onMounted(() => {
@@ -42,7 +45,7 @@ function calcBoardPosition() {
     {{ y }}
   </p>
   <div class="board" @mousemove="move">
-    <Box :x="x" :y="y" />
+    <Box id="box" :x="x" :y="y" />
   </div>
 </template>
 
