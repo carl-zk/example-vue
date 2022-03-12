@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted, watch } from 'vue';
+import { ref, reactive, computed, onMounted, watch, onUnmounted } from 'vue';
 import { Position } from '../entity/entities';
 import Box from './Box.vue'
 
@@ -26,6 +26,12 @@ function move(e: MouseEvent) {
   // box!.style.top = (e.clientY - boardY.value) + "px"
 }
 
+const listener = (e: KeyboardEvent) => {
+  if ("ArrowLeft" == e.key || "ArrowUp" == e.key || "ArrowRight" == e.key || "ArrowDown" == e.key) {
+    console.log(e)
+  }
+}
+
 onMounted(() => {
   window.onresize = calcBoardPosition
   calcBoardPosition()
@@ -36,16 +42,21 @@ onMounted(() => {
       boxes[i].push({ x: i, y: j })
     }
   }
-  window.addEventListener("keyup", (e) => {
-    if ("ArrowLeft" == e.key || "ArrowUp" == e.key || "ArrowRight" == e.key || "ArrowDown" == e.key) {
-      console.log(e)
-    }
-  })
+  window.addEventListener("keyup", listener)
+})
+
+onUnmounted(() => {
+  window.onresize = null
+  window.removeEventListener("keyup", listener)
 })
 
 function calcBoardPosition() {
-  boardX.value = document.querySelector('.board')!.getBoundingClientRect().left
-  boardY.value = document.querySelector('.board')!.getBoundingClientRect().top
+  let left = document.querySelector('.board')?.getBoundingClientRect().left
+  let top = document.querySelector('.board')?.getBoundingClientRect().top
+  if (left && top) {
+    boardX.value = left
+    boardY.value = top
+  }
 }
 
 function press(e: KeyboardEvent) {

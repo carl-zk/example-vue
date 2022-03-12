@@ -21,6 +21,11 @@ const allRoutes: RouteRecordRaw[] = [
         name: 'board',
         component: () => import('../components/Board.vue')
 
+    },
+    {
+        path: '/sokoban',
+        name: 'sokoban',
+        component: () => import('../components/sokoban/index.vue')
     }
 ];
 
