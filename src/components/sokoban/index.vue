@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, reactive } from 'vue';
+import { ref, onMounted, onUnmounted, reactive, computed } from 'vue';
+import { AutoPushBox, cloneOf, keyOf } from './algri';
 import { CellStatus, mapList } from './entity';
 
 // 当前皮卡丘位置
@@ -52,7 +53,6 @@ function initBoard(i: number) {
     }
   }
   boardMap[pos.x][pos.y] = boardMap[pos.x][pos.y] | CellStatus.Pikachu
-  document.querySelector('.box')
 }
 
 function move(dx: number, dy: number) {
@@ -70,7 +70,7 @@ function move(dx: number, dy: number) {
   pos.x = i;
   pos.y = j;
 
-  setTimeout(checkWin, 200)
+  setTimeout(checkWin, 500)
 }
 
 /**
@@ -111,6 +111,39 @@ function checkWin() {
     initBoard(pk.value)
   }
 }
+
+const path: number[][] = reactive([])
+let idx: number
+
+function autoSolve() {
+  initBoard(pk.value)
+  let autoPush = new AutoPushBox({
+    st: cloneOf(boardMap),
+    curX: pos.x,
+    curY: pos.y,
+    target: goal,
+    score: document.querySelectorAll(".type10").length,
+    key: keyOf(boardMap),
+    path: []
+  })
+  let p = autoPush.solve()!
+  path.length = 0
+  for (let x of p) {
+    path.push(x)
+  }
+  console.log(path.length)
+  idx = 0
+  // setTimeout(() => {
+  //   for (let dir of path) {
+  //     setTimeout(move, 2000, dir[0], dir[1])
+  //   }
+  // }, 100)
+}
+
+function moveNext() {
+  move(path[idx][0], path[idx][1])
+  idx++;
+}
 </script>
 
 <template>
@@ -122,10 +155,23 @@ function checkWin() {
             <span style="float">第{{ i }}关</span>
           </el-option>
         </el-select>
+        <el-button
+          @click="autoSolve"
+          :style="{ display: 'block', margin: `10px`, position: `relative`, left: `0px` }"
+        >自动求解</el-button>
+        <el-button
+          id="nextStep"
+          @click="moveNext"
+          :style="{ display: 'flow-right', margin: `10px, 0px, 10px, auto`, position: `absolute` }"
+        >下一步</el-button>
       </el-aside>
       <!-- <hr width="1" size="auto" /> -->
       <el-container>
-        <el-header :style="{ borderBottom: `1px solid black` }">推箱子</el-header>
+        <el-header :style="{ backgroundColor: `lightblue`, color: `white`, padding: '0' }">
+          <h1
+            :style="{ display: 'inline-block', 'text-align': 'center', 'text-shadow': `2px 2px 4px #000000`, fontSize: '38px', height: 'inherit', margin: '0', padding: '4px' }"
+          >推箱子</h1>
+        </el-header>
         <el-main>
           <div class="box">
             <template v-for="(row, i) in boardMap">
