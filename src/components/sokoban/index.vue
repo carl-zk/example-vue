@@ -13,6 +13,9 @@ let goal = 0
 // board 行宽
 const blockStatus = CellStatus.Block | CellStatus.Box | CellStatus.Wall
 
+const path: number[][] = reactive([])
+const idx = ref(0)
+
 const lister = (e: KeyboardEvent) => {
   switch (e.key) {
     case 'ArrowLeft':
@@ -37,6 +40,9 @@ onUnmounted(() => {
 })
 
 function initBoard(i: number) {
+  while (path.length > 0) {
+    path.pop()
+  }
   boardMap.length = 0
   // pikachu position
   pos.x = mapList[i].start.i
@@ -70,7 +76,7 @@ function move(dx: number, dy: number) {
   pos.x = i;
   pos.y = j;
 
-  setTimeout(checkWin, 500)
+  setTimeout(checkWin, 100)
 }
 
 /**
@@ -106,17 +112,15 @@ function idOf(i: number, j: number) {
 
 function checkWin() {
   if (document.querySelectorAll(".type10").length == goal) {
-    alert('恭喜！进入下一关：' + (pk.value + 2))
-    pk.value = pk.value + 1;
-    initBoard(pk.value)
+    // alert('恭喜！进入下一关：' + (pk.value + 2))
+    // pk.value = (pk.value + 1) % mapList.length;
+    // initBoard(pk.value)
   }
 }
 
-const path: number[][] = reactive([])
-let idx: number
-
 function autoSolve() {
   initBoard(pk.value)
+
   let autoPush = new AutoPushBox({
     st: cloneOf(boardMap),
     curX: pos.x,
@@ -127,29 +131,37 @@ function autoSolve() {
     path: []
   })
   let p = autoPush.solve()!
-  path.length = 0
   for (let x of p) {
     path.push(x)
   }
-  console.log(path.length)
-  idx = 0
-  // setTimeout(() => {
-  //   for (let dir of path) {
-  //     setTimeout(move, 2000, dir[0], dir[1])
-  //   }
-  // }, 100)
+  idx.value = 0
+  setInterval(() => {
+    if (idx.value < path.length) {
+      let i = idx.value
+      move(path[i][0], path[i][1])
+      idx.value++
+    }
+  }, 200)
 }
 
 function moveNext() {
-  move(path[idx][0], path[idx][1])
-  idx++;
+  move(path[idx.value][0], path[idx.value][1])
+  idx.value++;
+}
+
+function directionOf(dx: number, dy: number) {
+  return dx == 0 ? dy == 1 ? '→' : '←' : dx == 1 ? '↓' : '↑'
 }
 </script>
 
 <template>
   <div class="common-layout">
     <el-container>
-      <el-aside width="20%" class="demo-shadow" :style="{ boxShadow: `var(--el-box-shadow-base)` }">
+      <el-aside
+        width="20%"
+        class="demo-shadow"
+        :style="{ boxShadow: `var(--el-box-shadow-base)`, 'min-height': '600px' }"
+      >
         <el-select v-model="pk" @change="initBoard(pk)">
           <el-option v-for="i in mapList.length" :key="i" :value="i - 1" :label="'第' + i + '关'">
             <span style="float">第{{ i }}关</span>
@@ -159,15 +171,29 @@ function moveNext() {
           @click="autoSolve"
           :style="{ display: 'block', margin: `10px`, position: `relative`, left: `0px` }"
         >自动求解</el-button>
-        <el-button
+
+        <div :style="{ display: path.length > 0 ? '' : 'none' }">
+          <p>推理路径</p>
+          <p>{{ path.length }}</p>
+          <ol class="pathList">
+            <li
+              v-for="(v, i) in path"
+              :style="{ 'background-color': i == idx ? '#ddd' : '' }"
+            >{{ directionOf(v[0], v[1]) }}</li>
+          </ol>
+        </div>
+
+        <!-- <el-button
           id="nextStep"
           @click="moveNext"
           :style="{ display: 'flow-right', margin: `10px, 0px, 10px, auto`, position: `absolute` }"
-        >下一步</el-button>
+        >下一步</el-button>-->
       </el-aside>
       <!-- <hr width="1" size="auto" /> -->
       <el-container>
-        <el-header :style="{ backgroundColor: `lightblue`, color: `white`, padding: '0' }">
+        <el-header
+          :style="{ positoin: 'fixed', top: '0', backgroundColor: `lightblue`, color: `white`, padding: '0' }"
+        >
           <h1
             :style="{ display: 'inline-block', 'text-align': 'center', 'text-shadow': `2px 2px 4px #000000`, fontSize: '38px', height: 'inherit', margin: '0', padding: '4px' }"
           >推箱子</h1>
@@ -185,11 +211,28 @@ function moveNext() {
 </template>
 
 <style scoped lang="scss">
+ul.pathList {
+  list-style-type: "none";
+  margin: 0;
+  padding: 0;
+}
+
+.pathList li {
+  text-align: "center";
+  background-color: "grey";
+}
+
+ol li:hover {
+  background-color: #ddd;
+}
 .box {
   overflow: show;
   margin: 15vh auto 0;
   height: 480px;
   width: 480px;
+  position: fixed;
+  top: 0;
+  left: 50%;
 }
 
 .box div {
