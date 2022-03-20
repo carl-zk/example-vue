@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, reactive, computed } from 'vue';
-import { AutoPushBox, cloneOf, keyOf } from './algri';
+import { AutoPushBox, AutoPushBox2, cloneOf, keyOf, weightOf } from './algri';
 import { CellStatus, mapList } from './entity';
 
 // 当前皮卡丘位置
@@ -111,24 +111,35 @@ function idOf(i: number, j: number) {
 }
 
 function checkWin() {
-  if (document.querySelectorAll(".type10").length == goal) {
-    // alert('恭喜！进入下一关：' + (pk.value + 2))
-    // pk.value = (pk.value + 1) % mapList.length;
-    // initBoard(pk.value)
+  if (document.querySelectorAll(".type14").length == goal) {
+    alert('恭喜！进入下一关：' + (pk.value + 2))
+    pk.value = (pk.value + 1) % mapList.length;
+    initBoard(pk.value)
   }
 }
 
 function autoSolve() {
   initBoard(pk.value)
 
-  let autoPush = new AutoPushBox({
+  let targets: number[][] = []
+  for (let i = 0; i < boardMap.length; i++) {
+    for (let j = 0; j < boardMap[0].length; j++) {
+      if ((CellStatus.Target & boardMap[i][j]) != 0) {
+        targets.push([i, j])
+      }
+    }
+  }
+
+  let autoPush = new AutoPushBox2({
     st: cloneOf(boardMap),
     curX: pos.x,
     curY: pos.y,
     target: goal,
     score: document.querySelectorAll(".type10").length,
     key: keyOf(boardMap),
-    path: []
+    path: [],
+    weight: weightOf(pos.x, pos.y, targets, boardMap),
+    targetsLocation: targets
   })
   let p = autoPush.solve()!
   for (let x of p) {
@@ -141,7 +152,7 @@ function autoSolve() {
       move(path[i][0], path[i][1])
       idx.value++
     }
-  }, 200)
+  }, 100)
 }
 
 function moveNext() {
@@ -199,7 +210,10 @@ function directionOf(dx: number, dy: number) {
           >推箱子</h1>
         </el-header>
         <el-main>
-          <div class="box">
+          <div
+            class="box"
+            :style="{ height: (boardMap.length * 50) + 'px', width: (boardMap[0]?.length * 50) + 'px' }"
+          >
             <template v-for="(row, i) in boardMap">
               <div v-for="(p, j) in row" :key="idOf(i, j)" :id="idOf(i, j)" :class="['type' + p]"></div>
             </template>
@@ -228,8 +242,8 @@ ol li:hover {
 .box {
   overflow: show;
   margin: 15vh auto 0;
-  height: 480px;
-  width: 480px;
+  height: 600px;
+  width: 600px;
   position: fixed;
   top: 0;
   left: 50%;
@@ -237,57 +251,67 @@ ol li:hover {
 
 .box div {
   float: left;
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
+  background-size: 100% 100%;
+  // cursor: pointer;
 }
-.type0 {
+.type1 {
   // block
-  background-color: #eee;
+
+  background-image: url("./img/wall.jpg");
 }
 .type2 {
   // target
-  /*要推的地方*/
   @extend .type4;
   opacity: 0.5;
 }
 .type4 {
   // path
   background-color: #3266cc;
-}
-.type32 {
-  /*墙*/
-  background-color: rgba(7, 17, 27, 0.8);
+  // background-color: white;
 }
 .type8 {
   /*箱子*/
   box-sizing: border-box;
   border: 1px solid rgba(7, 17, 27, 0.5);
   background-color: #cca71a;
+  background-image: url("./img/box.png");
 }
-.type10 {
+.type16 {
+  background-image: url("./img/player.png");
+}
+.type32 {
+  /*墙*/
+  background-color: rgba(7, 17, 27, 0.8);
+  background-image: url("./img/wall.jpg");
+}
+.type6 {
+  /*目标+路*/
   @extend .type2;
-  @extend .type8;
+  @extend .type4;
 }
 .type12 {
   // box + path
   @extend .type4;
   @extend .type8;
 }
-.type16 {
-  /*皮卡丘*/
-  width: 40px;
-  height: 40px;
-  background: url("./img/pikachu.jpg") #3266cc;
-  background-size: cover;
-}
-.type18 {
-  @extend .type2;
-  @extend .type16;
+.type14 {
+  // @extend .type2;
+  // @extend .type4;
+  // @extend .type8;
+  background-image: url("./img/over_box.png");
 }
 .type20 {
   @extend .type4;
   @extend .type16;
 }
+.type22 {
+  @extend .type2;
+  @extend .type4;
+  @extend .type16;
+}
+
 .demo-shadow {
   height: auto;
   width: 20%;

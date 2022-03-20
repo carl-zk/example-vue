@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "element-plus": "^2.0.5",
+    "java-like-lib-ts": "^0.0.1-beta4",
     "vue": "^3.2.25",
     "vue-router": "^4.0.13"
   },
