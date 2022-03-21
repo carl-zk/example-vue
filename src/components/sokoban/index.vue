@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, reactive, computed } from 'vue';
-import { AutoPushBox, AutoPushBox2, cloneOf, keyOf, weightOf } from './algri';
-import { CellStatus, mapList } from './entity';
+import { AutoPushBox, AutoPushBox2, cloneOf, keyOf, weightOf, canMove } from './algorithm';
+import { CellStatus, mapList, blockStatus } from './entity';
 
 // 当前皮卡丘位置
 const pos = { x: 4, y: 6 }
@@ -10,10 +10,9 @@ const boardMap: CellStatus[][] = reactive([])
 const pk = ref(0)
 // 目标个数
 let goal = 0
-// board 行宽
-const blockStatus = CellStatus.Block | CellStatus.Box | CellStatus.Wall
-
+// 推解路径
 const path: number[][] = reactive([])
+// 路径下标
 const idx = ref(0)
 
 const lister = (e: KeyboardEvent) => {
@@ -39,7 +38,11 @@ onUnmounted(() => {
   window.removeEventListener("keydown", lister)
 })
 
-function initBoard(i: number) {
+/**
+ * 初始化地图
+ * @param i 第i关
+ */
+function initBoard(i: number): void {
   while (path.length > 0) {
     path.pop()
   }
@@ -52,7 +55,7 @@ function initBoard(i: number) {
   for (let r = 0; r < mp.length; r++) {
     boardMap[r] = []
     for (let c = 0; c < mp[0].length; c++) {
-      if (mp[r][c] == 1) {
+      if (mp[r][c] == 1 || mp[r][c] == 5) {
         goal++;
       }
       boardMap[r].push(CellStatus.statusOf(mp[r][c]))
@@ -61,10 +64,10 @@ function initBoard(i: number) {
   boardMap[pos.x][pos.y] = boardMap[pos.x][pos.y] | CellStatus.Pikachu
 }
 
-function move(dx: number, dy: number) {
+function move(dx: number, dy: number): void {
   const i = pos.x + dx, j = pos.y + dy
   const p = pos.x + (dx * 2), q = pos.y + (dy * 2)
-  if (!canMove(i, j, p, q)) {
+  if (!canMove(i, j, p, q, boardMap)) {
     return;
   }
   boardMap[pos.x][pos.y] = boardMap[pos.x][pos.y] ^ CellStatus.Pikachu
@@ -79,46 +82,23 @@ function move(dx: number, dy: number) {
   setTimeout(checkWin, 100)
 }
 
-/**
- * 是否可移动
- * @param i 下一格 row
- * @param j 下一格 col
- * @param p 下下格 row
- * @param q 下下格 col
- */
-function canMove(i: number, j: number, p: number, q: number) {
-  if (!isValidIndex(i, j)) {
-    return false;
-  }
-  if ((boardMap[i][j] & CellStatus.Block) != 0
-    || (boardMap[i][j] & CellStatus.Wall) != 0) {
-    return false;
-  }
-  if ((boardMap[i][j] & CellStatus.Box) != 0) {
-    if (!isValidIndex(p, q) || (boardMap[p][q] & blockStatus) != 0) {
-      return false;
-    }
-  }
-  return true;
-}
-
-function isValidIndex(r: number, c: number) {
-  return 0 <= r && r < boardMap.length && 0 <= c && c < boardMap[0].length
-}
-
-function idOf(i: number, j: number) {
-  return '_' + (i * 12 + j)
-}
-
-function checkWin() {
-  if (document.querySelectorAll(".type14").length == goal) {
+function checkWin(): void {
+  if (got() == goal) {
     alert('恭喜！进入下一关：' + (pk.value + 2))
     pk.value = (pk.value + 1) % mapList.length;
     initBoard(pk.value)
   }
 }
 
-function autoSolve() {
+function got(): number {
+  return document.querySelectorAll(".type14").length
+}
+
+function idOf(i: number, j: number): string {
+  return '_' + ((i << 5) + j)
+}
+
+function autoSolve(): void {
   initBoard(pk.value)
 
   let targets: number[][] = []
@@ -135,16 +115,19 @@ function autoSolve() {
     curX: pos.x,
     curY: pos.y,
     target: goal,
-    score: document.querySelectorAll(".type10").length,
+    score: got(),
     key: keyOf(boardMap),
     path: [],
-    weight: weightOf(pos.x, pos.y, targets, boardMap),
+    weight: weightOf(pos.x, pos.y, targets, boardMap, got()),
     targetsLocation: targets
   })
+
   let p = autoPush.solve()!
+
   for (let x of p) {
     path.push(x)
   }
+
   idx.value = 0
   setInterval(() => {
     if (idx.value < path.length) {
@@ -152,7 +135,7 @@ function autoSolve() {
       move(path[i][0], path[i][1])
       idx.value++
     }
-  }, 100)
+  }, 50)
 }
 
 function moveNext() {
@@ -268,14 +251,16 @@ ol li:hover {
 }
 .type4 {
   // path
+  box-sizing: border-box;
+  border: 1px solid rgba(221, 228, 236, 0.5);
   background-color: #3266cc;
   // background-color: white;
 }
 .type8 {
   /*箱子*/
-  box-sizing: border-box;
-  border: 1px solid rgba(7, 17, 27, 0.5);
-  background-color: #cca71a;
+
+  //
+  // background-color: #cca71a;
   background-image: url("./img/box.png");
 }
 .type16 {

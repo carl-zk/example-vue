@@ -4,7 +4,7 @@ const allRoutes: RouteRecordRaw[] = [
     {
         path: '/',
         name: 'home',
-        redirect: '/addName'
+        redirect: '/sokoban'
     },
     {
         path: '/addName',

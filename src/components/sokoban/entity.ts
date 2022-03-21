@@ -36,33 +36,6 @@ export namespace CellStatus {
 
 export const blockStatus = CellStatus.Block | CellStatus.Box | CellStatus.Wall
 
-/**
- * 是否可移动
- * @param i 下一格 row
- * @param j 下一格 col
- * @param p 下下格 row
- * @param q 下下格 col
- */
-export function canMove(i: number, j: number, p: number, q: number, boardMap: CellStatus[][]) {
-  if (!isValidIndex(i, j, boardMap)) {
-    return false;
-  }
-  if ((boardMap[i][j] & CellStatus.Block) != 0
-    || (boardMap[i][j] & CellStatus.Wall) != 0) {
-    return false;
-  }
-  if ((boardMap[i][j] & CellStatus.Box) != 0) {
-    if (!isValidIndex(p, q, boardMap) || (boardMap[p][q] & blockStatus) != 0) {
-      return false;
-    }
-  }
-  return true;
-}
-
-function isValidIndex(r: number, c: number, boardMap: CellStatus[][]) {
-  return 0 <= r && r < boardMap.length && 0 <= c && c < boardMap[0].length
-}
-
 export const mapList: PlayMap[] = [
   {
     map: [

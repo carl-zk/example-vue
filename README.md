@@ -1,4 +1,11 @@
-# Vue 3 + Typescript + Vite
+# 介绍
+
+建这个项目的目的就是为了写一个可以自动推箱子的工具，方便我玩手机上的那个推箱子游戏。因为手机上的没有推解步骤提示，不方便。
+用了几周的零碎时间终于是做完了，效果还不错，以后有机会就更新！
+
+![sokoban](./sokoban.png)
+
+## Vue 3 + Typescript + Vite
 
 This template should help get you started developing with Vue 3 and Typescript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
 
@@ -27,3 +34,5 @@ Since TypeScript cannot handle type information for `.vue` imports, they are shi
 [CSS Grid 网格布局教程](https://www.ruanyifeng.com/blog/2019/03/grid-layout-tutorial.html)
 
 [https://github.com/OBKoro1/web_accumulate/tree/d6b599ca22d8656d3f31f80bffa976fac36d2d75/example/pushKoro](https://github.com/OBKoro1/web_accumulate/tree/d6b599ca22d8656d3f31f80bffa976fac36d2d75/example/pushKoro)
+
+[https://github.com/xingorg1/projectOfGjf/blob/master/Sokoban/index.css](https://github.com/xingorg1/projectOfGjf/blob/master/Sokoban/index.css)
